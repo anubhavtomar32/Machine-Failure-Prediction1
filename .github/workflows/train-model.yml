@@ -1,41 +1,34 @@
-name: Train Model
+
+name: Train ML Model
 
 on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight UTC
 
 jobs:
-  train:
+  train-model:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          lfs: true  # Add this line to fetch LFS files
 
-      - name: Set up Python 3.9
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.10"
 
       - name: Install dependencies
         run: |
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            pip install pandas scikit-learn
-          fi
+          pip install -r requirements.txt
 
-      - name: Run model training
-        run: python model.py
-
-      - name: Commit and push model.pkl
+      - name: Train model
         run: |
-          git config --local user.email 'actions@github.com'
-          git config --local user.name 'GitHub Action'
-          git add model.pkl
-          git commit -m 'Update trained model.pkl' || echo "No changes to commit"
-          git push
+          python model.py
+
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trained-model
+          path: model.pkl
