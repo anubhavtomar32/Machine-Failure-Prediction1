@@ -1,0 +1,39 @@
+name: Train Model
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install pandas scikit-learn
+          fi
+
+      - name: Run model training
+        run: python model.py
+
+      - name: Commit and push model.pkl
+        run: |
+          git config --local user.email 'actions@github.com'
+          git config --local user.name 'GitHub Action'
+          git add model.pkl
+          git commit -m 'Update trained model.pkl' || echo "No changes to commit"
+          git push
