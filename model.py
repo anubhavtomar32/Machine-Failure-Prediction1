@@ -15,8 +15,8 @@ data = pd.read_csv('dataset/machine_failure_dataset.csv')
 print("Dataset columns:", data.columns.tolist())
 
 # Use the correct column name 'Machine failure' instead of 'Failure'
-X = data.drop('Machine failure', axis=1, errors='ignore')
-y = data['Machine failure']
+X = data.drop(' failure', axis=1, errors='ignore')
+y = data['failure']
 
 # Remove non-numeric columns if any
 X = X.select_dtypes(include=['number'])
