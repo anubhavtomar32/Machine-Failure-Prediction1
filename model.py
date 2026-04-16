@@ -1,35 +1,31 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 import pickle
-import os
-
-# Ensure dataset directory exists
-if not os.path.exists('dataset'):
-    print("Warning: dataset directory not found")
-    exit(1)
 
 # Load dataset
 data = pd.read_csv('dataset/machine_failure_dataset.csv')
 
-# Debug: Print column names to verify
-print("Dataset columns:", data.columns.tolist())
+# Features and target
+X = data.drop('Failure', axis=1)
+y = data['Failure']
 
-# Use the correct column name 'Machine failure' instead of 'Failure'
-X = data.drop(' failure', axis=1, errors='ignore')
-y = data['failure']
-
-# Remove non-numeric columns if any
-X = X.select_dtypes(include=['number'])
-
-print(f"Features shape: {X.shape}")
-print(f"Target shape: {y.shape}")
+# Split into training and testing (important for accuracy)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train model
-model = RandomForestClassifier(random_state=42, n_estimators=100)
-model.fit(X, y)
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+# Predict on test data
+y_pred = model.predict(X_test)
+
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy * 100:.2f}%")
 
 # Save model
-os.makedirs('.', exist_ok=True)
 pickle.dump(model, open('model.pkl', 'wb'))
 
-print("Model trained and saved successfully!")
+print("Model trained and saved as model.pkl")
