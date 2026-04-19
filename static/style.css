@@ -18,7 +18,26 @@
     border-radius: 8px;
     animation: blink 1s infinite;
 }
+/* LOGIN */
+.login-box {
+    width: 300px;
+    margin: auto;
+    margin-top: 150px;
+    padding: 20px;
+    background: #13233a;
+    text-align: center;
+    border-radius: 10px;
+}
 
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .cards {
+        flex-direction: column;
+    }
+    .form-panel {
+        grid-template-columns: 1fr;
+    }
+}
 .hidden {
     display: none;
 }
