@@ -1,31 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Machine Failure Prediction</title>
+    <title>Industrial Machine Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div class="container">
-    <h1>⚙️ Machine Health Monitor</h1>
+
+    <h1>🏭 Smart Machine Dashboard</h1>
+
+    <button onclick="startSimulation()" class="sim-btn">▶ Start Simulation</button>
 
     <form id="form" action="/predict" method="post">
-        <input type="number" name="Temperature" placeholder="🌡 Temperature" required>
-        <input type="number" name="Vibration" placeholder="📳 Vibration" required>
-        <input type="number" name="Pressure" placeholder="⚡ Pressure" required>
-        <input type="number" name="Runtime" placeholder="⏱ Runtime" required>
-        <input type="number" name="Humidity" placeholder="💧 Humidity" required>
 
-        <button type="submit">Predict Status</button>
+        <input type="number" id="temp" name="Temperature" placeholder="Temperature">
+        <input type="number" id="vib" name="Vibration" placeholder="Vibration">
+        <input type="number" id="pres" name="Pressure" placeholder="Pressure">
+        <input type="number" id="run" name="Runtime" placeholder="Runtime">
+        <input type="number" id="hum" name="Humidity" placeholder="Humidity">
+
+        <button type="submit">Predict</button>
     </form>
 
-    <div id="loader" class="hidden">Analyzing Machine...</div>
+    <!-- ALERT -->
+    <div id="alertBox" class="alert hidden">⚠️ MACHINE RISK DETECTED</div>
+
+    <!-- LINE CHART -->
+    <canvas id="lineChart"></canvas>
+
+    <!-- GAUGES -->
+    <div class="gauges">
+        <div class="gauge"><span id="g1">0</span><p>Temp</p></div>
+        <div class="gauge"><span id="g2">0</span><p>Vibration</p></div>
+        <div class="gauge"><span id="g3">0</span><p>Pressure</p></div>
+    </div>
+
 </div>
 
+<!-- SOUND -->
+<audio id="alarm" src="https://www.soundjay.com/buttons/beep-07.wav"></audio>
+
 <script>
-document.getElementById("form").addEventListener("submit", function() {
-    document.getElementById("loader").classList.remove("hidden");
+let chartData = {
+    labels: [],
+    datasets: [{
+        label: 'Temperature Trend',
+        data: []
+    }]
+};
+
+const ctx = document.getElementById('lineChart').getContext('2d');
+
+const lineChart = new Chart(ctx, {
+    type: 'line',
+    data: chartData
 });
+
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+function startSimulation() {
+    setInterval(() => {
+
+        let t = random(60, 100);
+        let v = random(30, 80);
+        let p = random(25, 45);
+        let r = random(800, 1800);
+        let h = random(30, 70);
+
+        document.getElementById('temp').value = t;
+        document.getElementById('vib').value = v;
+        document.getElementById('pres').value = p;
+        document.getElementById('run').value = r;
+        document.getElementById('hum').value = h;
+
+        // Update chart
+        chartData.labels.push('');
+        chartData.datasets[0].data.push(t);
+        if(chartData.labels.length > 10){
+            chartData.labels.shift();
+            chartData.datasets[0].data.shift();
+        }
+        lineChart.update();
+
+        // Update gauges
+        document.getElementById('g1').innerText = t;
+        document.getElementById('g2').innerText = v;
+        document.getElementById('g3').innerText = p;
+
+        // ALERT CONDITION
+        if (t > 85 || v > 65 || p > 38) {
+            document.getElementById('alertBox').classList.remove('hidden');
+            document.getElementById('alarm').play();
+        } else {
+            document.getElementById('alertBox').classList.add('hidden');
+        }
+
+    }, 2000);
+}
 </script>
 
 </body>
