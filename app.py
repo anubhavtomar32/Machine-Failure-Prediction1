@@ -10,7 +10,7 @@ except:
     pd.DataFrame(columns=["Temperature","Vibration","Pressure","Runtime","Humidity","Prediction"]).to_csv(DATA_FILE, index=False)
 
 
-@app.route('/predict', methods=['POST'])
+app.route('/predict', methods=['POST'])
 def predict():
     features = [float(x) for x in request.form.values()]
     prediction = model.predict([np.array(features)])
