@@ -27,3 +27,6 @@
 
 </body>
 </html>
+<div class="result-box {% if 'Failure' in prediction_text %}failure{% else %}success{% endif %}">
+    {{ prediction_text }}
+</div>
