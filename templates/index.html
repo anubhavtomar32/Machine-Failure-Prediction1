@@ -5,14 +5,28 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h2>Machine Failure Prediction</h2>
-    <form action="/predict" method="post">
-        <input type="text" name="Temperature" placeholder="Temperature" required><br>
-        <input type="text" name="Vibration" placeholder="Vibration" required><br>
-        <input type="text" name="Pressure" placeholder="Pressure" required><br>
-        <input type="text" name="Runtime" placeholder="Runtime" required><br>
-        <input type="text" name="Humidity" placeholder="Humidity" required><br><br>
-        <button type="submit">Predict</button>
+
+<div class="container">
+    <h1>⚙️ Machine Health Monitor</h1>
+
+    <form id="form" action="/predict" method="post">
+        <input type="number" name="Temperature" placeholder="🌡 Temperature" required>
+        <input type="number" name="Vibration" placeholder="📳 Vibration" required>
+        <input type="number" name="Pressure" placeholder="⚡ Pressure" required>
+        <input type="number" name="Runtime" placeholder="⏱ Runtime" required>
+        <input type="number" name="Humidity" placeholder="💧 Humidity" required>
+
+        <button type="submit">Predict Status</button>
     </form>
+
+    <div id="loader" class="hidden">Analyzing Machine...</div>
+</div>
+
+<script>
+document.getElementById("form").addEventListener("submit", function() {
+    document.getElementById("loader").classList.remove("hidden");
+});
+</script>
+
 </body>
 </html>
