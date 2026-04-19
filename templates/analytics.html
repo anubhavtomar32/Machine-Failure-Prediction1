@@ -1,39 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Analytics</title>
-<link rel="stylesheet" href="/static/style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Failure Prediction - Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">⚙️ Machine Health Monitor</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/analytics">📊 Analytics</a>
+                <a class="nav-link" href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
 
-<div class="main">
-    <h1>📊 Analytics Dashboard</h1>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Prediction History</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="/download" class="btn btn-success w-100 mb-2">⬇ Download Report</a>
+                        <a href="/dashboard" class="btn btn-primary w-100">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <canvas id="chart"></canvas>
+    <script>
+    let temps = {{ temps | tojson }};
+    let preds = {{ preds | tojson }};
 
-    <br>
-    <a href="/download" class="btn">⬇ Download Report</a>
-</div>
+    let colors = preds.map(p => p === "Failure" ? "rgba(255, 99, 132, 0.6)" : "rgba(75, 192, 192, 0.6)");
+    let borderColors = preds.map(p => p === "Failure" ? "rgba(255, 99, 132, 1)" : "rgba(75, 192, 192, 1)");
 
-<script>
-let temps = {{ temps | tojson }};
-let preds = {{ preds | tojson }};
+    new Chart(document.getElementById("chart"), {
+        type: 'line',
+        data: {
+            labels: temps.map((_, i) => `Reading ${i + 1}`),
+            datasets: [{
+                label: "Air Temperature (K)",
+                data: temps,
+                backgroundColor: colors,
+                borderColor: borderColors,
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+    </script>
 
-let colors = preds.map(p => p === "Failure" ? "red" : "green");
-
-new Chart(document.getElementById("chart"), {
-    type: 'bar',
-    data: {
-        labels: temps.map((_,i)=>i+1),
-        datasets: [{
-            label: "Temperature Readings",
-            data: temps,
-            backgroundColor: colors
-        }]
-    }
-});
-</script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

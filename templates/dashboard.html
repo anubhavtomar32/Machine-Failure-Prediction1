@@ -1,30 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Failure Prediction - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">⚙️ Machine Health Monitor</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/analytics">📊 Analytics</a>
+                <a class="nav-link" href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
 
-<div class="container">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Predict Machine Failure</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/predict" method="post">
+                            <div class="mb-3">
+                                <label for="air_temp" class="form-label">Air Temperature (K) <small class="text-muted">Ambient air temperature in Kelvin</small></label>
+                                <input type="number" step="0.1" class="form-control" id="air_temp" name="Air Temperature" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="process_temp" class="form-label">Process Temperature (K) <small class="text-muted">Internal process temperature in Kelvin</small></label>
+                                <input type="number" step="0.1" class="form-control" id="process_temp" name="Process Temperature" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="rot_speed" class="form-label">Rotational Speed (rpm) <small class="text-muted">Spindle speed in revolutions per minute</small></label>
+                                <input type="number" class="form-control" id="rot_speed" name="Rotational Speed" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="torque" class="form-label">Torque (Nm) <small class="text-muted">Torque applied in Newton-meters</small></label>
+                                <input type="number" step="0.1" class="form-control" id="torque" name="Torque" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tool_wear" class="form-label">Tool Wear (min) <small class="text-muted">Tool wear time in minutes</small></label>
+                                <input type="number" class="form-control" id="tool_wear" name="Tool Wear" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Predict Failure</button>
+                        </form>
+                    </div>
+                </div>
 
-<h1>⚙️ Machine Health Monitor</h1>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">📋 Instructions & Sample Values</h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>About the Machine:</strong> This system predicts failures for manufacturing machines, such as CNC milling machines, lathes, or similar industrial equipment used in production lines.</p>
+                        
+                        <p><strong>How to Fill the Form:</strong></p>
+                        <ul>
+                            <li>Enter real-time sensor readings from your machine's monitoring system</li>
+                            <li>All values should be current measurements taken simultaneously</li>
+                            <li>Temperatures are in Kelvin (convert from Celsius by adding 273.15)</li>
+                            <li>Use precise measurements for best prediction accuracy</li>
+                        </ul>
 
-<form action="/predict" method="post">
+                        <p><strong>Sample Values (Test Different Scenarios):</strong></p>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <button class="btn btn-sm btn-outline-success w-100" onclick="fillNormal()">✅ Normal Operation</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-sm btn-outline-warning w-100" onclick="fillHighTorque()">⚠️ High Torque Issue</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-sm btn-outline-danger w-100" onclick="fillHighSpeed()">🚨 High Speed Failure</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-sm btn-outline-danger w-100" onclick="fillToolWear()">🔧 Tool Wear Failure</button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <strong>💡 Tip:</strong> Test different scenarios to see how the system responds to various machine conditions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<input name="Temperature" placeholder="Temperature (°C)" required>
-<input name="Vibration" placeholder="Vibration (mm/s)" required>
-<input name="Pressure" placeholder="Pressure (bar)" required>
-<input name="Runtime" placeholder="Runtime (hrs)" required>
-<input name="Humidity" placeholder="Humidity (%)" required>
+    <script>
+    function fillNormal() {
+        document.getElementById('air_temp').value = '298.1';
+        document.getElementById('process_temp').value = '308.6';
+        document.getElementById('rot_speed').value = '1551';
+        document.getElementById('torque').value = '42.8';
+        document.getElementById('tool_wear').value = '0';
+        showScenario('Normal Operation - Should predict NO FAILURE');
+    }
+    
+    function fillHighTorque() {
+        document.getElementById('air_temp').value = '298.9';
+        document.getElementById('process_temp').value = '309.0';
+        document.getElementById('rot_speed').value = '1410';
+        document.getElementById('torque').value = '65.7';
+        document.getElementById('tool_wear').value = '191';
+        showScenario('High Torque Issue - Should predict FAILURE (excessive torque)');
+    }
+    
+    function fillHighSpeed() {
+        document.getElementById('air_temp').value = '298.9';
+        document.getElementById('process_temp').value = '309.1';
+        document.getElementById('rot_speed').value = '2861';
+        document.getElementById('torque').value = '4.6';
+        document.getElementById('tool_wear').value = '143';
+        showScenario('High Speed Failure - Should predict FAILURE (abnormally high speed)');
+    }
+    
+    function fillToolWear() {
+        document.getElementById('air_temp').value = '298.8';
+        document.getElementById('process_temp').value = '308.9';
+        document.getElementById('rot_speed').value = '1455';
+        document.getElementById('torque').value = '41.3';
+        document.getElementById('tool_wear').value = '208';
+        showScenario('Tool Wear Failure - Should predict FAILURE (high tool wear time)');
+    }
+    
+    function showScenario(message) {
+        // Remove existing scenario alert
+        const existing = document.getElementById('scenario-alert');
+        if (existing) existing.remove();
+        
+        // Add new scenario alert
+        const alert = document.createElement('div');
+        alert.id = 'scenario-alert';
+        alert.className = 'alert alert-info mt-3';
+        alert.innerHTML = '<strong>Test Scenario:</strong> ' + message;
+        
+        const form = document.querySelector('form');
+        form.appendChild(alert);
+        
+        // Scroll to form
+        form.scrollIntoView({ behavior: 'smooth' });
+    }
+    </script>
 
-<button type="submit">Predict</button>
-
-</form>
-
-<a href="/analytics" class="btn">📊 Analytics</a>
-<a href="/logout" class="btn">Logout</a>
-
-</div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

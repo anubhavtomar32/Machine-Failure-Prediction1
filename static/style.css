@@ -1,88 +1,32 @@
-/* RESET */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* Custom styles for Machine Failure Prediction App */
 
-/* BODY */
 body {
-    font-family: 'Segoe UI', Arial;
-    background: #0e1a2b;
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* MAIN CARD */
-.container {
-    background: #13233a;
-    padding: 30px;
-    border-radius: 12px;
-    width: 340px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-    text-align: center;
-}
-
-/* TITLE */
-h1 {
-    margin-bottom: 10px;
-}
-
-/* INPUTS */
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border: none;
-    outline: none;
-}
-
-/* BUTTONS */
-button, .btn {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 6px;
-    border: none;
-    background: #00c6ff;
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-/* BUTTON HOVER */
-button:hover, .btn:hover {
-    opacity: 0.9;
-}
-
-/* RESULT BOX */
-.result-box {
-    margin: 15px 0;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 18px;
+.navbar-brand {
     font-weight: bold;
 }
 
-/* COLORS */
-.success {
-    background: #00ff88;
-    color: black;
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.failure {
-    background: #ff4d4d;
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
 }
 
-/* TEXT */
-p {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #ccc;
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.alert {
+    font-size: 1.2rem;
+}
+
+canvas {
+    max-height: 400px;
 }
