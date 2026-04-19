@@ -56,3 +56,12 @@
     border-radius: 10px;
     padding: 10px;
 }
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px;
+    background: #00c6ff;
+    color: black;
+    text-decoration: none;
+    border-radius: 5px;
+}
