@@ -1,22 +1,133 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* BODY */
 body {
-    text-align: center;
-    font-family: Arial;
-    background-color: #f4f4f4;
-}
-
-h2 {
-    color: #333;
-}
-
-input {
-    padding: 10px;
-    margin: 5px;
-    width: 200px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: blue;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: white;
+}
+
+/* CONTAINER */
+.container {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    border-radius: 20px;
+    width: 340px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    animation: fadeIn 0.8s ease;
+}
+
+/* TITLE */
+h1 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
     border: none;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 14px;
+}
+
+input::placeholder {
+    color: #ddd;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 10px #00c6ff;
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,198,255,0.4);
+}
+
+/* RESULT BOX */
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* SUCCESS */
+.success {
+    background: rgba(0, 255, 170, 0.2);
+    border: 1px solid #00ffaa;
+    color: #00ffaa;
+}
+
+/* FAILURE */
+.failure {
+    background: rgba(255, 77, 77, 0.2);
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+}
+
+/* LINK */
+a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #00c6ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* LOADER */
+#loader {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #00c6ff;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
