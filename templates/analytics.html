@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Analytics</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="main">
+    <h1>📊 Analytics Dashboard</h1>
+
+    <canvas id="chart"></canvas>
+
+    <br>
+    <a href="/download" class="btn">⬇ Download Report</a>
+</div>
+
+<script>
+let temps = {{ temps | tojson }};
+let preds = {{ preds | tojson }};
+
+let colors = preds.map(p => p === "Failure" ? "red" : "green");
+
+new Chart(document.getElementById("chart"), {
+    type: 'bar',
+    data: {
+        labels: temps.map((_,i)=>i+1),
+        datasets: [{
+            label: "Temperature Readings",
+            data: temps,
+            backgroundColor: colors
+        }]
+    }
+});
+</script>
+
+</body>
+</html>
