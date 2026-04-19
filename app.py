@@ -1,31 +1,51 @@
-from flask import Flask, render_template, request
-import pickle
-import numpy as np
-import os
+from flask import send_file
+import pandas as pd
 
-app = Flask(__name__)
+DATA_FILE = "history.csv"
 
-# Load trained model
-model = pickle.load(open('model.pkl', 'rb'))
+# Create file if not exists
+try:
+    pd.read_csv(DATA_FILE)
+except:
+    pd.DataFrame(columns=["Temperature","Vibration","Pressure","Runtime","Humidity","Prediction"]).to_csv(DATA_FILE, index=False)
 
-@app.route('/')
-def home():
-    return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
     features = [float(x) for x in request.form.values()]
-    final_features = [np.array(features)]
-    
-    prediction = model.predict(final_features)
+    prediction = model.predict([np.array(features)])
+    result = "Failure" if prediction[0] == 1 else "No Failure"
 
-    result = "⚠️ Failure Likely" if prediction[0] == 1 else "✅ No Failure"
-    
+    # Save data
+    df = pd.read_csv(DATA_FILE)
+    new_row = {
+        "Temperature": features[0],
+        "Vibration": features[1],
+        "Pressure": features[2],
+        "Runtime": features[3],
+        "Humidity": features[4],
+        "Prediction": result
+    }
+    df = pd.concat([df, pd.DataFrame([new_row])])
+    df.to_csv(DATA_FILE, index=False)
+
     return render_template('result.html', prediction_text=result)
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)                                                                                  
+
+@app.route('/analytics')
+def analytics():
+    df = pd.read_csv(DATA_FILE)
+
+    return render_template(
+        "analytics.html",
+        temps=list(df["Temperature"]),
+        preds=list(df["Prediction"])
+    )
+
+
+@app.route('/download')
+def download():
+    return send_file(DATA_FILE, as_attachment=True)
     from flask import Flask, render_template, request, redirect, session
 import pickle, numpy as np, os
 
@@ -63,4 +83,3 @@ def predict():
 def logout():
     session.pop('user', None)
     return redirect('/')
-                           
