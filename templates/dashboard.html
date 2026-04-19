@@ -2,78 +2,29 @@
 <html>
 <head>
 <link rel="stylesheet" href="/static/style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<div class="dashboard">
+<div class="container">
 
-<div class="sidebar">
-    <h2>🏭 IMS</h2>
-    <a href="/logout">Logout</a>
-</div>
+<h1>⚙️ Machine Health Monitor</h1>
 
-<div class="main">
+<form action="/predict" method="post">
 
-<h1>Machine Dashboard</h1>
+<input name="Temperature" placeholder="Temperature (°C)" required>
+<input name="Vibration" placeholder="Vibration (mm/s)" required>
+<input name="Pressure" placeholder="Pressure (bar)" required>
+<input name="Runtime" placeholder="Runtime (hrs)" required>
+<input name="Humidity" placeholder="Humidity (%)" required>
 
-<!-- MACHINE CARDS -->
-<div class="cards">
-    <div class="card"><h3>Temperature</h3><p id="t">0 °C</p></div>
-    <div class="card"><h3>Vibration</h3><p id="v">0 mm/s</p></div>
-    <div class="card"><h3>Pressure</h3><p id="p">0 bar</p></div>
-</div>
+<button type="submit">Predict</button>
 
-<!-- FORM -->
-<form action="/predict" method="post" class="form-panel">
-    <input id="temp" name="Temperature" placeholder="Temperature (°C)">
-    <input id="vib" name="Vibration" placeholder="Vibration (mm/s)">
-    <input id="pres" name="Pressure" placeholder="Pressure (bar)">
-    <input id="run" name="Runtime" placeholder="Runtime (hours)">
-    <input id="hum" name="Humidity" placeholder="Humidity (%)">
-    <button>Predict</button>
 </form>
 
-<!-- ALERT -->
-<div id="alert" class="alert hidden">⚠️ Machine Risk</div>
-
-<!-- CHART -->
-<canvas id="chart"></canvas>
+<a href="/analytics" class="btn">📊 Analytics</a>
+<a href="/logout" class="btn">Logout</a>
 
 </div>
-</div>
-
-<script>
-let chartData = { labels: [], datasets: [{ data: [] }] };
-let chart = new Chart(document.getElementById("chart"), { type:'line', data:chartData });
-
-function rand(a,b){ return Math.floor(Math.random()*(b-a)+a); }
-
-setInterval(()=>{
-    let t=rand(60,100), v=rand(30,80), p=rand(25,45);
-
-    document.getElementById("temp").value=t;
-    document.getElementById("vib").value=v;
-    document.getElementById("pres").value=p;
-
-    document.getElementById("t").innerText=t+" °C";
-    document.getElementById("v").innerText=v+" mm/s";
-    document.getElementById("p").innerText=p+" bar";
-
-    chartData.labels.push('');
-    chartData.datasets[0].data.push(t);
-    if(chartData.labels.length>10){chartData.labels.shift();chartData.datasets[0].data.shift();}
-    chart.update();
-
-    if(t>85 || v>65 || p>38){
-        document.getElementById("alert").classList.remove("hidden");
-    } else {
-        document.getElementById("alert").classList.add("hidden");
-    }
-
-},2000);
-</script>
 
 </body>
 </html>
-<a href="/analytics" class="btn">📊 View Analytics</a>
